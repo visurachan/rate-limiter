@@ -1,0 +1,22 @@
+services:
+
+  redis:
+    image: redis:7-alpine
+    container_name: rl-redis
+    ports:
+      - "6381:6379"
+
+  postgres:
+    image: postgres:15
+    container_name: rl-postgres
+    ports:
+      - "5435:5432"
+    environment:
+      POSTGRES_DB: ratelimiter
+      POSTGRES_USER: ratelimiter
+      POSTGRES_PASSWORD: ratelimiter
+    volumes:
+      - rl-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  rl-postgres-data:

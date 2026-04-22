@@ -1,0 +1,61 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: rate-limiter-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5435/ratelimiter
+    username: ratelimiter
+    password: ratelimiter
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    open-in-view: false
+
+  data:
+    redis:
+      host: localhost
+      port: 6381
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=60s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus,metrics
+  endpoint:
+    health:
+      show-details: always
+
+app:
+  jwt:
+    secret: "e46801957a01e97e2382de3757cb5cb74f03fd545778158c35ace8017eaea897"
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      redis:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        sliding-window-size: 10
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        automatic-transition-from-open-to-half-open-enabled: true
+
+logging:
+  level:
+    com.ratelimiter: DEBUG
