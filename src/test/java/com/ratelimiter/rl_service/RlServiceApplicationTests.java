@@ -1,4 +1,4 @@
-package com.ratelimitter.rl_service;
+package com.ratelimiter.rl_service;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

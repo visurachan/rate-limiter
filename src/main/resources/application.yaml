@@ -43,7 +43,7 @@ management:
 
 app:
   jwt:
-    secret: "e46801957a01e97e2382de3757cb5cb74f03fd545778158c35ace8017eaea897"
+    secret: "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"
 
 resilience4j:
   circuitbreaker:

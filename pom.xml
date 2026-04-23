@@ -8,7 +8,7 @@
 		<version>3.5.13</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.ratelimitter</groupId>
+	<groupId>com.ratelimiter</groupId>
 	<artifactId>rl-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
