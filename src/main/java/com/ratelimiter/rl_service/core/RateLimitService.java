@@ -1,5 +1,6 @@
 package com.ratelimiter.rl_service.core;
 
+import com.ratelimiter.rl_service.metrics.RateLimitMetrics;
 import com.ratelimiter.rl_service.model.RateLimitEvent;
 import com.ratelimiter.rl_service.model.RateLimitResult;
 import com.ratelimiter.rl_service.model.RateLimitRule;
@@ -21,9 +22,9 @@ public class RateLimitService {
     private final KeyResolver keyResolver;
     private final TokenBucketStrategy tokenBucketStrategy;
     private final RateLimitEventRepository eventRepository;
+    private final RateLimitMetrics metrics;
 
     public RateLimitResult check(String serviceId, HttpServletRequest request) {
-
 
         RateLimitRule rule = configLoader.loadRule(serviceId);
 
@@ -32,6 +33,7 @@ public class RateLimitService {
         String userId = extractUserId(redisKey);
 
 
+        long startMs = System.currentTimeMillis();
         List<Long> luaResult = tokenBucketStrategy.consume(
                 redisKey,
                 rule.getCapacity(),
@@ -40,6 +42,13 @@ public class RateLimitService {
 
 
         RateLimitResult result = buildResult(luaResult, rule);
+
+        if (result.isAllowed()) {
+            metrics.recordAllowed(serviceId);
+        } else {
+            metrics.recordBlocked(serviceId);
+        }
+        metrics.recordRedisDuration(System.currentTimeMillis() - startMs);
 
 
         persistEventAsync(serviceId, userId, result);
