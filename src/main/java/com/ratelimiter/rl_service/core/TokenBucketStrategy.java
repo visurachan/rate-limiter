@@ -2,6 +2,7 @@ package com.ratelimiter.rl_service.core;
 
 
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -24,6 +25,7 @@ public class TokenBucketStrategy {
         this.tokenBucketScript = buildScript();
     }
 
+    @CircuitBreaker(name = "redis", fallbackMethod = "failOpen")
     public List<Long> consume(String redisKey, int capacity, int refillRate) {
         long nowMs = System.currentTimeMillis();
 
@@ -48,5 +50,10 @@ public class TokenBucketStrategy {
         );
         script.setResultType(List.class);
         return script;
+    }
+
+    public List<Long> failOpen(String redisKey, int capacity, int refillRate, Throwable ex) {
+        log.warn("CIRCUIT OPEN — failing open for key={}. Redis error: {}", redisKey, ex.getMessage());
+        return List.of(1L, -1L);  // allowed=true, remaining=-1 (unknown)
     }
 }
