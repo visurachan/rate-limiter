@@ -277,3 +277,13 @@ rate of 5 tokens per second.
 
 See the [Banking Core API](https://github.com/visurachan/banking-core-api)
 repository for the full implementation.
+
+## Related Projects
+
+This service is part of a microservices banking system:
+
+| Service                                                                  | Description |
+|--------------------------------------------------------------------------|---|
+| [Banking Core API](https://github.com/visurachan/banking-core-api)       | Customer-facing banking operations |
+| [Fraud Detection Service](https://github.com/visurachan/fraud-detection-service) | Kafka-based fraud analysis |
+| [Rate Limiter Service](https://github.com/visurachan/rate-limiter)       | Distributed rate limiting |
